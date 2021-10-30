@@ -1,43 +1,51 @@
+import java.util.*;
+
 class Solution {
+    int[][] matrix;
     public int[] solution(int rows, int columns, int[][] queries) {
-        int[] answer = {};
+        this.matrix = new int[rows][columns];
+        int[] answer = new int[queries.length];
         
-        // table 초기화
-        int num = 1;
-        int[][] table = new int[rows][columns];
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
-                table[i][j] = num++;
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                matrix[i][j] = i*columns + j + 1;
             }
         }
         
         for(int i = 0; i < queries.length; i++){
-            int nowX = queries[i][0] - 1;
-            int nowY = queries[i][1] - 1;
-            
-            int startX = queries[i][0] - 1;
-            int startY = queries[i][1] - 1;
-            int endX = queries[i][2] - 1;
-            int endY = queries[i][3] - 1;
-            
-            int temp = table[startX][startY];
-            int before = 0;
-            for (int a = startY + 1; a <= endY; a++){
-                before = table[startX][a];
-                table[startX][a] = temp;
-                temp = before;
-                System.out.println(table[startX][a] + " ");
-            }
-            
-            for (int b = startX + 1; b <= endX; b++){
-                before = table[b][endY];
-                table[]
-            }
+            answer[i] = rotate(queries[i]);
         }
-        
-        
-        
         
         return answer;
     }
+    
+    public int rotate(int[] query){
+        int r1 = query[0]-1; 
+        int c1 = query[1]-1;
+        int r2 = query[2]-1;
+        int c2 = query[3]-1;
+        
+        int temp = this.matrix[r1][c1];
+        int min = temp;
+        for(int i = r1; i < r2; i++){
+            this.matrix[i][c1] = this.matrix[i+1][c1];
+            if(min > this.matrix[i][c1]) min = this.matrix[i][c1];
+        }
+        for(int i = c1; i < c2; i++){
+            this.matrix[r2][i] = this.matrix[r2][i+1];
+            if(min > this.matrix[r2][i]) min = this.matrix[r2][i];
+        }
+        for(int i = r2; i > r1; i--){
+            this.matrix[i][c2] = this.matrix[i-1][c2];
+            if(min > this.matrix[i][c2]) min = this.matrix[i][c2];
+        }
+        for(int i = c2; i > c1; i--){
+            this.matrix[r1][i] = this.matrix[r1][i-1];
+            if(min > this.matrix[r1][i]) min = this.matrix[r1][i];
+        }
+        this.matrix[r1][c1+1] = temp;
+        
+        return min;
+    }
+    
 }
